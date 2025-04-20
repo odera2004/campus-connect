@@ -22,6 +22,15 @@ jwt = JWTManager(app)
 jwt.init_app(app)
 
 from views import *
+app.register_blueprint(Forum_bp)
+app.register_blueprint(Match_bp)
+app.register_blueprint(User_bp)
+app.register_blueprint(Message_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(UserJobApplication_bp)
+app.register_blueprint(Comment_bp)
+
+
 
 
 # Callback function to check if a JWT exists in the database blocklist

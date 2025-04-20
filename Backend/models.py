@@ -5,6 +5,20 @@ from datetime import datetime
 
 metadata = MetaData()
 db = SQLAlchemy(metadata=metadata)
+
+
+class Match(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user1_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # First user
+    user2_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # Second user
+    matched_on = db.Column(db.DateTime, default=datetime.utcnow)  # Date of match
+
+    user1 = db.relationship('User', foreign_keys=[user1_id], backref='matches_user1')
+    user2 = db.relationship('User', foreign_keys=[user2_id], backref='matches_user2')
+
+    def __repr__(self):
+        return f'<Match {self.user1_id} & {self.user2_id}>'
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -17,12 +31,17 @@ class User(db.Model):
     profile_image_url = db.Column(db.String(200))  # URL to the profile image
     bio = db.Column(db.Text)  # Bio/description
     gender = db.Column(db.String(10))  # Gender for matching
-    matched_users = db.relationship('Match', backref='user', lazy='dynamic')
+    matched_users = db.relationship(
+        'Match',
+        foreign_keys=[Match.user1_id, Match.user2_id],
+        primaryjoin=((id == Match.user1_id) | (id == Match.user2_id)),
+        backref='users_in_match',
+        lazy='dynamic'
+    )
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
+
     def __repr__(self):
         return f'<User {self.name}>'
-
 
 class ForumPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -69,17 +88,7 @@ class JobPost(db.Model):
     def __repr__(self):
         return f'<JobPost {self.title}>'
 
-class Match(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user1_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # First user
-    user2_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # Second user
-    matched_on = db.Column(db.DateTime, default=datetime.utcnow)  # Date of match
 
-    user1 = db.relationship('User', foreign_keys=[user1_id], backref='matches_user1')
-    user2 = db.relationship('User', foreign_keys=[user2_id], backref='matches_user2')
-
-    def __repr__(self):
-        return f'<Match {self.user1_id} & {self.user2_id}>'
 
 
 class Message(db.Model):

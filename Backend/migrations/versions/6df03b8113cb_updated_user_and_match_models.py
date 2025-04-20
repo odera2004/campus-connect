@@ -1,8 +1,8 @@
-"""Initial migration.
+"""Updated User and Match models
 
-Revision ID: db1f1c0d0d42
+Revision ID: 6df03b8113cb
 Revises: 
-Create Date: 2025-04-15 18:35:47.678354
+Create Date: 2025-04-19 21:01:06.307065
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'db1f1c0d0d42'
+revision = '6df03b8113cb'
 down_revision = None
 branch_labels = None
 depends_on = None
